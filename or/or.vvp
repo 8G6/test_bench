@@ -1,0 +1,54 @@
+#! c:/iverilog/bin/vvp
+:ivl_version "0.10.0 (devel)" "(s20130827)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 9;
+:vpi_module "system";
+:vpi_module "vhdl_sys";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_012A3668 .scope module, "test" "test" 2 2;
+ .timescale -9 -9;
+L_012AE220 .functor OR 1, v012A52E8_0, v012A3738_0, C4<0>, C4<0>;
+v012A52E8_0 .var "a", 0 0;
+v012A3738_0 .var "b", 0 0;
+v012A3790_0 .net "c", 0 0, L_012AE220;  1 drivers
+v012A37E8_0 .var "x", 1 0;
+    .scope S_012A3668;
+T_0 ;
+    %set/v v012A37E8_0, 0, 2;
+    %end;
+    .thread T_0;
+    .scope S_012A3668;
+T_1 ;
+    %vpi_call 2 8 "$dumpfile", "test.vcd" {0 0};
+    %vpi_call 2 9 "$dumpvars", 1'sb0, S_012A3668 {0 0};
+    %movi 8, 40, 7;
+T_1.0 %cmp/s 0, 8, 7;
+    %jmp/0xz T_1.1, 5;
+    %add 8, 1, 7;
+    %ix/load 0, 1, 0;
+    %load/vp0 15, v012A37E8_0, 2;
+    %set/v v012A37E8_0, 15, 2;
+    %load/v 15, v012A37E8_0, 1; Only need 1 of 2 bits
+; Save base=15 wid=1 in lookaside.
+    %set/v v012A52E8_0, 15, 1;
+    %ix/load 1, 1, 0;
+    %mov 4, 0, 1;
+    %jmp/1 T_1.2, 4;
+    %load/x1p 15, v012A37E8_0, 1;
+    %jmp T_1.3;
+T_1.2 ;
+    %mov 15, 2, 1;
+T_1.3 ;
+; Save base=15 wid=1 in lookaside.
+    %set/v v012A3738_0, 15, 1;
+    %delay 50, 0;
+    %jmp T_1.0;
+T_1.1 ;
+    %end;
+    .thread T_1;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "or.v";
